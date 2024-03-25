@@ -1,4 +1,4 @@
-create or replace package openai_rest_pkg as
+create or replace package openai_pkg as
 
     function get_image_url(
         p_message           in openai_images.message%type
@@ -24,5 +24,5 @@ create or replace package openai_rest_pkg as
       , p_revised_prompt    in openai_images.revised_prompt%type
     );
 
-end openai_rest_pkg;
+end openai_pkg;
 /
