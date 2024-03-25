@@ -1,5 +1,13 @@
 create or replace package body openai_pkg as
 
+    function get_image_url(
+        p_message           in openai_images.message%type
+      , p_message_item_name in varchar2
+    ) return varchar2 is
+    begin
+      null;
+    end get_image_url;
+
     procedure add_openai_image(
         p_title             in openai_images.title%type
       , p_message           in openai_images.message%type
@@ -25,6 +33,10 @@ create or replace package body openai_pkg as
           , p_image_url
           , p_revised_prompt
         );
+    
+    exception
+      when others then
+        raise_application_error(-20000, 'An error occurred while adding the image.');
     end add_openai_image;
 
     procedure update_openai_image(
@@ -46,6 +58,10 @@ create or replace package body openai_pkg as
            , image_url = p_image_url
            , revised_prompt = p_revised_prompt
        where id = p_id;
+    
+    exception
+      when others then
+        raise_application_error(-20000, 'An error occurred while updating the image.');
     end update_openai_image;
 
 end openai_pkg;
