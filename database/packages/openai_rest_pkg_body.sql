@@ -1,71 +1,80 @@
 create or replace package body openai_rest_pkg as
 
-    -- REST API methods
-    g_post      constant varchar2(4) := 'POST';
-    g_put       constant varchar2(3) := 'PUT';
-    g_delete    constant varchar2(6) := 'DELETE';
+  -- REST API methods
+  g_post      constant varchar2(4) := 'POST';
+  g_put       constant varchar2(3) := 'PUT';
+  g_delete    constant varchar2(6) := 'DELETE';
 
-    -- OpenAI base URL
-    g_base_url  constant varchar2(25) := 'https://api.openai.com/v1';
+  -- OpenAI base URL
+  g_base_url  constant varchar2(25) := 'https://api.openai.com/v1';
 
-    -- OpenAI default model
-    g_model     constant varchar2(8) := 'dall-e-3';
+  -- OpenAI default model
+  g_model     constant varchar2(8) := 'dall-e-3';
 
-    procedure set_request_header is
-      l_api_key constant varchar2(12) := 'your_api_key';
-    begin
-      -- Set header parameter(s)
-      apex_web_service.g_request_headers(1).name := 'Content-Type';
-      apex_web_service.g_request_headers(1).value := 'application/json';
-      apex_web_service.g_request_headers(2).name := 'Authorization';
-      apex_web_service.g_request_headers(2).value := 'Baerer ' || l_api_key;
-    end set_request_header;
+  procedure set_request_header is
+    l_api_key constant varchar2(12) := 'your_api_key';
+  begin
+    -- Set header parameters
+    apex_web_service.set_request_headers(
+        p_name_01        => 'Content-Type'
+      , p_value_01       => 'application/json'
+      , p_name_02        => 'Authorization'
+      , p_value_02       => 'Baerer ' || l_api_key
+      , p_reset          => false
+      , p_skip_if_exists => true
+    );
+  end set_request_header;
 
-    function make_request(
-        p_request_body  in clob
-      , p_path          in varchar2
-    ) return clob is
-      l_response clob;
-    begin
-      -- Set request header parameters
-      set_request_header;
+  procedure make_request(
+      p_request_body        in clob
+    , p_path                in varchar2
+    , p_method              in varchar2
+    , p_out_response        out nocopy clob
+    , p_out_response_code   out nocopy number
+  ) is
+    l_response clob;
+  begin
+    -- Set request header parameters
+    set_request_header;
 
-      -- Make REST request
-      l_response := apex_web_service.make_rest_request(
-          p_url     => g_base_url || p_path
-        , p_action  => g_post
-        , p_body    => p_request_body
-      );
+    -- Make REST request and set the response to the OUT parameter
+    p_out_response := apex_web_service.make_rest_request(
+        p_url           => g_base_url || p_path
+      , p_http_method   => p_method
+      , p_body          => p_request_body
+    );
 
-      -- Return response
-      return l_response;
-    end make_request;
+    -- Set the response code to the OUT parameter
+    p_out_response_code := apex_web_service.g_status_code;
+  end make_request;
 
-    function get_image_url(
-        p_message in openai_images.message%type
-      , p_size    in varchar2
-    ) return varchar2 is
-      l_response_code number;
-      l_request       clob;
-      l_response      clob;
+  procedure create_image_url(
+      p_request_data        in  image_request_data
+    , p_out_response        out nocopy clob
+    , p_out_response_code   out nocopy number
+  ) is
+    l_path    constant varchar2(19) := '/images/generations';
+    l_request clob;
+  begin
+    -- Prepare JSON request
+    l_request := json_object(
+        key 'model' value g_model
+      , key 'prompt' value p_request_data.prompt
+      , key 'n' value 1
+      , key 'response_format' value 'url'
+      , key 'size' value p_request_data.image_size
+    );
 
-      l_path          constant varchar2(19) := '/images/generations';
-    begin
-      -- Prepare JSON request
-      l_request := json_object(
-          key 'model' value g_model
-        , key 'prompt' value p_message
-        , key 'n' value 1
-        , key 'response_format' value 'url'
-        , key 'size' value p_size
-      );
+    -- Make request
+    make_request(
+        p_request_body      => l_request
+      , p_path              => l_path
+      , p_method            => g_post
+      , p_out_response      => p_out_response
+      , p_out_response_code => p_out_response_code
+    );    
 
-      -- Make request
-      l_response := make_request(
-          p_request_body  => l_request
-        , p_path          => l_path
-      );
-    end get_image_url;
+  end create_image_url;
 
 end openai_rest_pkg;
 /

@@ -1,0 +1,1 @@
+create index openai_images_size_idx on openai_images (image_size_id);
