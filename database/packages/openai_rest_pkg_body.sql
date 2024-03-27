@@ -27,7 +27,8 @@ create or replace package body openai_rest_pkg as
 
   procedure make_request(
       p_request_body        in clob
-    , p_path                in varchar2
+    , p_url_path            in varchar2
+    , p_scope               in varchar2
     , p_method              in varchar2
     , p_out_response        out nocopy clob
     , p_out_response_code   out nocopy number
@@ -39,13 +40,25 @@ create or replace package body openai_rest_pkg as
 
     -- Make REST request and set the response to the OUT parameter
     p_out_response := apex_web_service.make_rest_request(
-        p_url           => g_base_url || p_path
+        p_url           => g_base_url || p_url_path
       , p_http_method   => p_method
       , p_body          => p_request_body
     );
 
     -- Set the response code to the OUT parameter
     p_out_response_code := apex_web_service.g_status_code;
+
+    -- Log request
+    rest_request_pkg.log_request(
+        p_scope          => p_scope
+      , p_url            => g_base_url
+      , p_url_path       => p_url_path
+      , p_method         => p_method
+      , p_request        => p_request_body
+      , p_response       => p_out_response
+      , p_response_code  => p_out_response_code
+    );
+
   end make_request;
 
   procedure create_image_url(
@@ -53,8 +66,9 @@ create or replace package body openai_rest_pkg as
     , p_out_response        out nocopy clob
     , p_out_response_code   out nocopy number
   ) is
-    l_path    constant varchar2(19) := '/images/generations';
-    l_request clob;
+    l_scope     constant varchar2(32) := 'openai_rest_pkg.create_image_url';
+    l_url_path  constant varchar2(19) := '/images/generations';
+    l_request   clob;
   begin
     -- Prepare JSON request
     -- NULL values will not be inclued in the request
@@ -71,7 +85,8 @@ create or replace package body openai_rest_pkg as
     -- Make request
     make_request(
         p_request_body      => l_request
-      , p_path              => l_path
+      , p_url_path          => l_url_path
+      , p_scope             => l_scope
       , p_method            => g_post
       , p_out_response      => p_out_response
       , p_out_response_code => p_out_response_code
