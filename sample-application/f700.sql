@@ -28,12 +28,12 @@ wwv_flow_imp.import_begin (
 end;
 /
  
-prompt APPLICATION 700 - Learning APEX
+prompt APPLICATION 700 - APEX + OpenAI
 --
 -- Application Export:
 --   Application:     700
---   Name:            Learning APEX
---   Date and Time:   02:14 Wednesday March 27, 2024
+--   Name:            APEX + OpenAI
+--   Date and Time:   02:21 Wednesday March 27, 2024
 --   Exported By:     LUCAS
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -84,8 +84,8 @@ begin
 wwv_imp_workspace.create_flow(
  p_id=>wwv_flow.g_flow_id
 ,p_owner=>nvl(wwv_flow_application_install.get_schema,'LUCAS')
-,p_name=>nvl(wwv_flow_application_install.get_application_name,'Learning APEX')
-,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'LEARNING-APEX700')
+,p_name=>nvl(wwv_flow_application_install.get_application_name,'APEX + OpenAI')
+,p_alias=>nvl(wwv_flow_application_install.get_application_alias,'APEX-OPENAI')
 ,p_page_view_logging=>'YES'
 ,p_page_protection_enabled_y_n=>'Y'
 ,p_checksum_salt=>'13A012B977B96A0FAE9A5ABADB2BACCEF4F8B8F743413D791FE48B9D61E98EF5'
@@ -107,6 +107,7 @@ wwv_imp_workspace.create_flow(
 ,p_no_proxy_domains=>nvl(wwv_flow_application_install.get_no_proxy_domains,'')
 ,p_flow_version=>'Release 1.0'
 ,p_flow_status=>'AVAILABLE_W_EDIT_LINK'
+,p_flow_unavailable_text=>'This application is currently unavailable at this time.'
 ,p_exact_substitutions_only=>'Y'
 ,p_browser_cache=>'N'
 ,p_browser_frame=>'D'
@@ -116,7 +117,7 @@ wwv_imp_workspace.create_flow(
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>'Learning APEX'
 ,p_last_updated_by=>'LUCAS'
-,p_last_upd_yyyymmddhh24miss=>'20240327021256'
+,p_last_upd_yyyymmddhh24miss=>'20240327022111'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>6
 ,p_print_server_type=>'NATIVE'
@@ -20170,19 +20171,18 @@ wwv_flow_imp_page.create_page(
  p_id=>1
 ,p_name=>'Home'
 ,p_alias=>'HOME'
-,p_step_title=>'Learning APEX'
+,p_step_title=>'Home'
 ,p_autocomplete_on_off=>'OFF'
 ,p_page_template_options=>'#DEFAULT#'
 ,p_protection_level=>'C'
 ,p_page_component_map=>'13'
 ,p_last_updated_by=>'LUCAS'
-,p_last_upd_yyyymmddhh24miss=>'20240325172811'
+,p_last_upd_yyyymmddhh24miss=>'20240327022111'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(24993419501579192)
-,p_plug_name=>'Learning APEX'
+,p_plug_name=>'APEX + OpenAI'
 ,p_region_template_options=>'#DEFAULT#'
-,p_escape_on_http_output=>'Y'
 ,p_plug_template=>wwv_flow_imp.id(24772477231579571)
 ,p_plug_display_sequence=>10
 ,p_plug_display_point=>'REGION_POSITION_01'
@@ -20957,7 +20957,7 @@ wwv_flow_imp_page.create_page(
  p_id=>9999
 ,p_name=>'Login Page'
 ,p_alias=>'LOGIN'
-,p_step_title=>'Learning APEX - Log In'
+,p_step_title=>'APEX and OpenAI'
 ,p_warn_on_unsaved_changes=>'N'
 ,p_first_item=>'AUTO_FIRST_ITEM'
 ,p_autocomplete_on_off=>'OFF'
@@ -20967,11 +20967,11 @@ wwv_flow_imp_page.create_page(
 ,p_protection_level=>'C'
 ,p_page_component_map=>'12'
 ,p_last_updated_by=>'LUCAS'
-,p_last_upd_yyyymmddhh24miss=>'20240325172811'
+,p_last_upd_yyyymmddhh24miss=>'20240327022014'
 );
 wwv_flow_imp_page.create_page_plug(
  p_id=>wwv_flow_imp.id(24986399153579213)
-,p_plug_name=>'Learning APEX'
+,p_plug_name=>'APEX + OpenAI'
 ,p_region_template_options=>'#DEFAULT#'
 ,p_plug_template=>wwv_flow_imp.id(24790619363579562)
 ,p_plug_display_sequence=>10
