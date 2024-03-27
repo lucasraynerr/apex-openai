@@ -12,16 +12,16 @@ create or replace package body openai_rest_pkg as
   g_model     constant varchar2(8) := 'dall-e-3';
 
   procedure set_request_header is
-    l_api_key constant varchar2(12) := 'your_api_key';
+    l_api_key constant varchar2(51) := 'openai_api_key';
   begin
     -- Set header parameters
     apex_web_service.set_request_headers(
         p_name_01        => 'Content-Type'
       , p_value_01       => 'application/json'
       , p_name_02        => 'Authorization'
-      , p_value_02       => 'Baerer ' || l_api_key
-      , p_reset          => false
-      , p_skip_if_exists => true
+      , p_value_02       => 'Bearer ' || l_api_key
+      , p_reset          => true
+      , p_skip_if_exists => false
     );
   end set_request_header;
 
@@ -49,7 +49,7 @@ create or replace package body openai_rest_pkg as
   end make_request;
 
   procedure create_image_url(
-      p_request_data        in  image_request_data
+      p_request_data        in  image_request_record
     , p_out_response        out nocopy clob
     , p_out_response_code   out nocopy number
   ) is
@@ -57,12 +57,15 @@ create or replace package body openai_rest_pkg as
     l_request clob;
   begin
     -- Prepare JSON request
+    -- NULL values will not be inclued in the request
     l_request := json_object(
         key 'model' value g_model
       , key 'prompt' value p_request_data.prompt
       , key 'n' value 1
+      , key 'quality' value p_request_data.image_quality
       , key 'response_format' value 'url'
       , key 'size' value p_request_data.image_size
+      absent on null
     );
 
     -- Make request

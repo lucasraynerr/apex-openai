@@ -9,7 +9,7 @@ create table openai_images(
   , prompt          varchar2(4000) not null
   , revised_prompt  varchar2(4000) not null
   , image_size_id   raw(16) not null
-  , image_quality   varchar2(5) not null
+  , image_quality   varchar2(5)
   , image_url       varchar2(4000) not null
 
   , constraint openai_images_pk primary key (id)
